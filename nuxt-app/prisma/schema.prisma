@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int         @id @default(autoincrement())
+  email     String      @unique
+  name      String?
+  sex       String
+  age       Int
+  DOB       DateTime
+  nutrients Nutrition[]
+  posts     Post[]
+  weights   Weight[]
+}
+
+model Nutrition {
+  id       Int    @id @default(autoincrement())
+  calories Float?
+  protein  Float?
+  carbs    Float?
+  fat      Float?
+  user_id  Int
+  User     User   @relation(fields: [user_id], references: [id])
+}
+
+model Weight {
+  id          Int    @id @default(autoincrement())
+  scaleWeight Float
+  trendWeight Float?
+  user_id     Int
+  user        User   @relation(fields: [user_id], references: [id])
+}
+
+model Post {
+  id        Int     @id @default(autoincrement())
+  title     String
+  content   String?
+  published Boolean @default(false)
+  authorId  Int
+  author    User    @relation(fields: [authorId], references: [id])
+}
